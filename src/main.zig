@@ -1,4 +1,5 @@
 const std = @import("std");
+const Color = @import("color.zig").Color;
 
 pub fn main() !void {
     // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
@@ -14,27 +15,22 @@ pub fn main() !void {
     // --- IMAGE ---
     const imageWidth: u32 = 256;
     const imageHeight: u32 = 256;
-    const maxColorValue: f32 = 255.999;
 
     // --- RENDER ---
     try stdout.print("P3\n{d} {d}\n255\n", .{ imageWidth, imageHeight });
 
     for (0..imageHeight) |i| {
+        std.debug.print("\nScanlines remaining: {d}", .{imageHeight - i});
         for (0..imageWidth) |j| {
-            const y: f32 = @floatFromInt(i);
-            const x: f32 = @floatFromInt(j);
+            const y: u8 = @intCast(i);
+            const x: u8 = @intCast(j);
 
-            const r: f32 = x / @as(f32, imageWidth - 1);
-            const g: f32 = y / @as(f32, imageHeight - 1);
-            const b: f32 = 0.0;
-
-            const ir: u32 = @intFromFloat(r * maxColorValue);
-            const ig: u32 = @intFromFloat(g * maxColorValue);
-            const ib: u32 = @intFromFloat(b * maxColorValue);
-
-            try stdout.print("{d} {d} {d}\n", .{ ir, ig, ib });
+            //const pixelColor = Color.new(@as(u8, imageWidth - 1) - x, @as(u8, imageHeight - 1) - y, 0);
+            const pixelColor = Color.new(x, y, 0);
+            try pixelColor.WriteColor(stdout);
         }
     }
+    std.debug.print("\nDone!\n", .{});
 
     try bw.flush(); // Don't forget to flush!
 }
