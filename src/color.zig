@@ -1,22 +1,27 @@
 const std = @import("std");
 
+pub const MAX_COLOR_VALUE: f64 = 255.999;
+
 pub const Color = struct {
     red: u8,
     green: u8,
     blue: u8,
 
-    pub fn new(r: u8, g: u8, b: u8) Color {
-        return .{ .red = r, .green = g, .blue = b };
+    pub fn InitFromNormalizedVector(normalizedVector: @Vector(3, f64)) Color {
+        return .{ .red = @intFromFloat(normalizedVector[0] * MAX_COLOR_VALUE), .green = @intFromFloat(normalizedVector[1] * MAX_COLOR_VALUE), .blue = @intFromFloat(normalizedVector[2] * MAX_COLOR_VALUE) };
     }
 
-    pub fn toVector(self: Color) @Vector(3, u8) {
+    pub fn ToNormalizedVector(self: Color) @Vector(3, f64) {
+        return .{
+            @as(f64, @floatFromInt(self.red)) / MAX_COLOR_VALUE,
+            @as(f64, @floatFromInt(self.green)) / MAX_COLOR_VALUE,
+            @as(f64, @floatFromInt(self.blue)) / MAX_COLOR_VALUE,
+        };
+    }
+
+    pub fn ToVector(self: Color) @Vector(3, u8) {
         return .{ self.red, self.green, self.blue };
     }
-
-    // pub fn WriteColor(WriterType: type, color: Color) !void {
-    //     std.debug.print("Writing color: {any}\n", .{color});
-    //     try WriterType.print("{d} {d} {d}\n", .{ color.red, color.green, color.blue });
-    // }
 
     pub fn WriteColor(self: Color, writer: anytype) !void {
         std.debug.print("Writing color: {any}\n", .{self});

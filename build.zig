@@ -1,3 +1,5 @@
+// TODO: Make it so that the build system automatically outputs a .ppm file
+
 const std = @import("std");
 
 // Although this function looks imperative, note that its job is to
