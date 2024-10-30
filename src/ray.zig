@@ -10,10 +10,10 @@ pub const Ray = struct {
     }
 
     pub fn UnitVector(self: Ray) @Vector(3, f64) {
-        return normalize(self.direction);
+        return Normalize(self.direction);
     }
 
-    fn normalize(vec: @Vector(3, f64)) @Vector(3, f64) {
+    fn Normalize(vec: @Vector(3, f64)) @Vector(3, f64) {
         const length = std.math.sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]);
         return .{
             vec[0] / length,

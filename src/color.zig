@@ -8,7 +8,11 @@ pub const Color = struct {
     blue: u8,
 
     pub fn InitFromNormalizedVector(normalizedVector: @Vector(3, f64)) Color {
-        return .{ .red = @intFromFloat(normalizedVector[0] * MAX_COLOR_VALUE), .green = @intFromFloat(normalizedVector[1] * MAX_COLOR_VALUE), .blue = @intFromFloat(normalizedVector[2] * MAX_COLOR_VALUE) };
+        return .{
+            .red = @intFromFloat(normalizedVector[0] * MAX_COLOR_VALUE),
+            .green = @intFromFloat(normalizedVector[1] * MAX_COLOR_VALUE),
+            .blue = @intFromFloat(normalizedVector[2] * MAX_COLOR_VALUE),
+        };
     }
 
     pub fn ToNormalizedVector(self: Color) @Vector(3, f64) {

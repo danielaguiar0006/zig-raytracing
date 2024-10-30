@@ -49,7 +49,7 @@ pub fn main() !void {
     try stdout.print("P3\n{d} {d}\n255\n", .{ imageWidth, imageHeight });
 
     for (0..imageHeight) |j| {
-        std.debug.print("\nScanlines remaining: {d}", .{imageHeight - j});
+        std.debug.print("Scanlines remaining: {d}\n", .{imageHeight - j});
         for (0..imageWidth) |i| {
             const pixelCenter: @Vector(3, f64) =
                 pixelZeroLocation +
