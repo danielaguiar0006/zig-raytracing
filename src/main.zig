@@ -1,5 +1,5 @@
-// We are using a right-handed coordinate system:
-// The y-axis go up, the x-axis to the right, and the negative z-axis pointing in the viewing direction.
+//! We are using a right-handed coordinate system:
+//! The y-axis go up, the x-axis to the right, and the negative z-axis pointing in the viewing direction.
 
 const std = @import("std");
 const Position = @import("position.zig").Position;
@@ -7,12 +7,6 @@ const Color = @import("color.zig").Color;
 const Ray = @import("ray.zig").Ray;
 
 pub fn main() !void {
-    // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
-    //std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
-
-    // stdout is for the actual output of your application, for example if you
-    // are implementing gzip, then only the compressed bytes should be sent to
-    // stdout, not any debugging messages.
     const stdout_file = std.io.getStdOut().writer();
     var bw = std.io.bufferedWriter(stdout_file);
     const stdout = bw.writer();
@@ -28,8 +22,7 @@ pub fn main() !void {
     // --- CAMERA / VIEWPORT ---
     const focalLength: f64 = 1.0;
     const viewportHeight: f64 = 2.0;
-    // Viewport widths less than one are okay since they are real valued
-    const viewportWidth: f64 = 2.0 * @as(f64, imageWidth) / @as(f64, imageHeight);
+    const viewportWidth: f64 = 2.0 * @as(f64, imageWidth) / @as(f64, imageHeight); // This is real valued
     const cameraCenter: Position = .{ .x = 0.0, .y = 0.0, .z = 0.0 };
 
     // Calculate the vectors across the horizontal and down the vertical viewport edges.
@@ -46,7 +39,11 @@ pub fn main() !void {
         @Vector(3, f64){ 0.0, 0.0, focalLength } -
         viewportU / @as(@Vector(3, f64), @splat(2.0)) -
         viewportV / @as(@Vector(3, f64), @splat(2.0));
-    const pixelZeroLocation: @Vector(3, f64) = viewportUpperLeft + @as(@Vector(3, f64), @splat(0.5)) * (pixelDeltaU + pixelDeltaV);
+
+    const pixelZeroLocation: @Vector(3, f64) =
+        viewportUpperLeft +
+        @as(@Vector(3, f64), @splat(0.5)) *
+        (pixelDeltaU + pixelDeltaV);
 
     // --- RENDER ---
     try stdout.print("P3\n{d} {d}\n255\n", .{ imageWidth, imageHeight });
@@ -58,6 +55,7 @@ pub fn main() !void {
                 pixelZeroLocation +
                 (@as(@Vector(3, f64), @splat(@as(f64, @floatFromInt(i)))) * pixelDeltaU) +
                 (@as(@Vector(3, f64), @splat(@as(f64, @floatFromInt(j)))) * pixelDeltaV);
+
             const rayDirection: @Vector(3, f64) = pixelCenter - cameraCenter.ToVector();
             const ray: Ray = .{ .origin = cameraCenter, .direction = rayDirection };
 
@@ -76,5 +74,8 @@ pub fn RayColor(ray: *const Ray) Color {
     const white: Color = .{ .red = 255, .green = 255, .blue = 255 };
     const lightBlue: Color = .{ .red = 128, .green = 178, .blue = 255 };
 
-    return Color.InitFromNormalizedVector((@as(@Vector(3, f64), @splat(1.0)) - aScalar) * white.ToNormalizedVector() + aScalar * lightBlue.ToNormalizedVector());
+    return Color.InitFromNormalizedVector((@as(@Vector(3, f64), @splat(1.0)) - aScalar) *
+        white.ToNormalizedVector() +
+        aScalar *
+        lightBlue.ToNormalizedVector());
 }
